@@ -19,6 +19,8 @@ import javax.crypto.SecretKeyFactory;
 import java.util.Arrays;
 import java.util.Base64;
 
+import static christensen.NSALoginController.verifyPasswordStrength;
+
 /**
 * The NSALoginController class handles password hashing and verification
 * for the {@link User} class.
@@ -111,6 +113,10 @@ public final class NSALoginController {
 	* @exception Exception If there is a problem with the chosen hash function.
 	*/
 	public static void hashUserPassword(User user) throws Exception {
+
+		// Verify password Strength
+		verifyPasswordStrength(user.getPassword());
+
 		// Get the next random salt value to use for this password
 		byte[] salt = getNextSalt();
 		char[] password = user.getPassword().toCharArray();
@@ -141,24 +147,19 @@ public final class NSALoginController {
 	/**********************************************************************************************
 	 * This function verifies that the password complies with new policy
 	 */
-	public static Boolean verifyPasswordStrength(String password) throws WeakPasswordException {
+	public static void verifyPasswordStrength(String password) throws WeakPasswordException {
 
 		// Setup to test the PASSWORD
 		int passwordLength = password.length();
-		boolean isWeak = true;
 
 		// Test to see if the PASSWORD complies with new policy
 		if (password.matches(".*\\d.*") && passwordLength >= 8) {
 			System.out.println("Password entered meets new policy criteria");
-			isWeak = false;
 		} else {
-			throw new WeakPasswordException("Password entered does not meet new policy criteria %\n" +
-					"Please enter a Password that is 8 characters in length %\n" +
-					" and containting at least one number (0 - 9)");
+			throw new WeakPasswordException("Password entered does not meet new policy criteria%\n"
+					+ "Please enter a Password that is 8 characters in length %\n" +
+					" and containing at least one number (0 - 9)");
 		}
-
-		// Return isWeak
-		return isWeak;
 	}
 	
 	/**
