@@ -20,36 +20,16 @@ public class Test{
         // Instance of the USER class with provided PASSWORD
         User user = new User(firstPassword);
 
-        // Set up for Weak Password prompt
-        boolean isWeak = true;
-
-        // Loop until PASSWORD complies with new policy criteria
-        do {
-            // Display variables before hashing
-            System.out.println("Here are the variables before the HASHing:");
-            user.displayVariables();
-
-            // Verify the PASSWORD strength
-            try {
-                verifyPasswordStrength(firstPassword);
-            } catch (WeakPasswordException e) {
-                System.out.println(e.getMessage() + "\n");
-                isWeak = true;
-            }
-
-            // Prompt for new PASSWORD
-            if (isWeak) {
-                System.out.print("Please provided a password: ");
-                firstPassword = _scanner.nextLine();
-                user.setPassword(firstPassword);
-            }
-        } while (!isWeak);
+        // Display variables before hashing
+        System.out.println("Here are the variables before the HASHing:");
+        user.displayVariables();
 
         try {
             hashUserPassword(user);
 
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
 
         // Display variables after hashing
