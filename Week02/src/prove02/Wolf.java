@@ -31,14 +31,6 @@ public class Wolf extends Creature implements Movable, Aware, Aggressor, Spawner
         setCanSpawn(false);
     }
 
-    public Wolf(Point location) {
-        location.x = _location.x + 1;
-        _rand = new Random();
-        _health = 3;
-        setDirection(_rand.nextInt(4));
-        setCanSpawn(false);
-    }
-
     public Boolean isAlive() {
         return _health > 0;
     }
@@ -102,33 +94,45 @@ public class Wolf extends Creature implements Movable, Aware, Aggressor, Spawner
      */
     public void senseNeighbors(Creature above, Creature below, Creature left, Creature right) {
 
-        for(int i = getDirection(); i < 4; i++) {
-
-            // Change direction if animal is present
-            if(i == 0) {
-                if(above instanceof Animal) {
-                    setDirection(2);
-                    break;
-                }
+        if(getDirection() == 2) {
+            if(above instanceof Animal) {
+                setDirection(2);
+            } else if (right instanceof Animal) {
+                setDirection(0);
+            }else if (below instanceof Animal) {
+                setDirection(3);
+            }else if (left instanceof Animal) {
+                setDirection(1);
             }
-            if(i == 1) {
-                if(right instanceof Animal) {
-                    setDirection(0);
-                    break;
-                }
+        }else if(getDirection() == 0) {
+            if(right instanceof Animal) {
+                setDirection(0);
+            }else if(below instanceof Animal) {
+                setDirection(3);
+            }else if(left instanceof Animal) {
+                setDirection(1);
+            }else if(above instanceof Animal) {
+                setDirection(2);
             }
-            if(i == 2) {
-                if(below instanceof Animal) {
-                    setDirection(3);
-                    break;
-                }
+        }else if(getDirection() == 3) {
+            if(below instanceof Animal) {
+                setDirection(3);
+            }else if(left instanceof Animal) {
+                setDirection(1);
+            }else if(above instanceof Animal) {
+                setDirection(2);
+            }else if(right instanceof Animal) {
+                setDirection(0);
             }
-            if(i == 3) {
-                if(left instanceof Animal) {
-                    setDirection(1);
-                    break;
-                }
-                i = 0;
+        }else if(getDirection() == 1) {
+            if(left instanceof Animal) {
+                setDirection(1);
+            }else if(above instanceof Animal) {
+                setDirection(2);
+            }else if(right instanceof Animal) {
+                setDirection(0);
+            }else if(below instanceof Animal) {
+                setDirection(3);
             }
         }
     }
@@ -138,9 +142,16 @@ public class Wolf extends Creature implements Movable, Aware, Aggressor, Spawner
      */
     public Creature spawnNewCreature() {
 
+        if(getCanSpawn() == false) {
+            return null;
+        }
+
         Wolf newWolf = new Wolf();
 
-        // newWolf.setLocation(_location.x++, _location.y);
+        Point newPoint = (Point)_location.clone();
+        newPoint.x--;
+
+        newWolf.setLocation(newPoint);
 
         setCanSpawn(false);
 
