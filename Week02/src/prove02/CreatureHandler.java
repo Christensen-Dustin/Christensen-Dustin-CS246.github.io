@@ -3,6 +3,7 @@ package prove02;
 import java.util.Random;
 import java.awt.Point;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
 * The "brains" of the game, which controls all of the creature activites.
@@ -17,7 +18,7 @@ public class CreatureHandler
 	int _rows;
 	int _cols;
 	Random _rand;
-	List<Creature> _creatures; 
+	List<Creature> _creatures;
 
 	/**
 	* Retrieves all of the creatures that exist in the world
@@ -116,6 +117,9 @@ public class CreatureHandler
 	*/
 	public void updateCreatures() {
 
+		// New list of creatures
+		List<Creature> spawnedCreatures = new ArrayList<Creature>();
+
 		// Handle all our creature behaviors here. Since we don't know ahead of time
 		// which creatures implement which behaviors, we can use the instanceof keyword
 		// to see if a given instance implements a particular interface.
@@ -146,10 +150,20 @@ public class CreatureHandler
 				}
 
 				if(c instanceof Spawner) {
+					Spawner s = (Spawner)c;
+					Creature newCreature = s.spawnNewCreature();
+					if(newCreature != null) {
+						spawnedCreatures.add(newCreature);
+					}
 
 
 				}
 
 			}
+
+		// Add spawned creatures to a new list
+		for(Creature c : spawnedCreatures) {
+			_creatures.add(c);
+		}
 	}
 }
